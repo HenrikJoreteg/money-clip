@@ -10,7 +10,9 @@
     "idb-keyval": "2.3.0"
   },
   "devDependencies": {
-    "microbundle": "0.4.4"
+    "@std/esm": "0.25.2",
+    "microbundle": "0.4.4",
+    "tape": "4.9.0"
   },
   "files": [
     "dist"
@@ -34,7 +36,8 @@
   },
   "scripts": {
     "build": "microbundle",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test": "tape test.js"
   },
-  "source": "src/index.js"
+  "source": "index.js"
 }

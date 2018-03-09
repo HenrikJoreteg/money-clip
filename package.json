@@ -3,6 +3,19 @@
   "description": "For managing your client side cache. Tiny wrapper over IndexedDB supporting versioning and max age.",
   "version": "0.0.0",
   "author": "Henrik Joreteg <henrik@joreteg.com> (joreteg.com)",
+  "bugs": {
+    "url": "https://github.com/HenrikJoreteg/money-clip/issues"
+  },
+  "dependencies": {
+    "idb-keyval": "2.3.0"
+  },
+  "devDependencies": {
+    "microbundle": "0.4.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/HenrikJoreteg/money-clip",
   "keywords": [
     "PWA",
     "cache",
@@ -11,13 +24,6 @@
   "license": "MIT",
   "main": "dist/money-clip.js",
   "module": "dist/money-clip.m.js",
-  "scripts": {
-    "build": "microbundle"
-  },
-  "source": "src/index.js",
-  "devDependencies": {
-    "microbundle": "0.4.4"
-  },
   "prettier": {
     "semi": false,
     "singleQuote": true
@@ -26,11 +32,9 @@
     "type": "git",
     "url": "https://github.com/HenrikJoreteg/money-clip.git"
   },
-  "homepage": "https://github.com/HenrikJoreteg/money-clip",
-  "bugs": {
-    "url": "https://github.com/HenrikJoreteg/money-clip/issues"
+  "scripts": {
+    "build": "microbundle",
+    "prepublish": "npm run build"
   },
-  "dependencies": {
-    "idb-keyval": "2.3.0"
-  }
+  "source": "src/index.js"
 }

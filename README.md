@@ -2,7 +2,7 @@
 
 ![](https://img.shields.io/npm/dm/money-clip.svg)![](https://img.shields.io/npm/v/money-clip.svg)![](https://img.shields.io/npm/l/money-clip.svg)
 
-For managing your client side cache. Tiny wrapper over Jake Archibald's tiny IndexedDB wrapper, [idb-keyval]() adding support for versioning and max age.
+For managing your client side cache. Tiny wrapper over Jake Archibald's tiny IndexedDB wrapper, [idb-keyval](https://github.com/jakearchibald/idb-keyval) adding support for versioning and max age.
 
 Designed for use in PWAs that need to cache data fetched from APIs and such.
 
@@ -16,7 +16,7 @@ It exposes mostly the same cache API with a few extras:
 1.  `clear`
 1.  `del` _called delete in original_
 
-These are all designed to always swallow errors because it's designed to work as an enhancement to a PWA. If something fails, you simply don't start with a primed cache of data for your app. Nothing lost.
+These will all swallow errors because it's designed to work as an enhancement to a PWA. If something fails you simply don't start with a primed cache of data for your app. Nothing lost.
 
 Clientside caching of user data is great, but can also be treacherous. We need some way to version our data, make sure we don't populate our app with really stale data, or populate the app with data from a previous session.
 
@@ -73,66 +73,30 @@ Returns an object with all the methods listed above, but with pre-populated opti
 
 ## example
 
-You could, for example use this with Redux to automatically cache content of certain reducers when certain action types occur.
-
-`get-persist-middleware.js`
-
-```js
-// This is just a shim for requestIdleCallback with fallback
-// if not supported
-import ric from 'ric-shim'
-
-// Here we can map action types to the reducers that should
-// be cached if they occur
-const actionTypeMap = {
-  FETCH_USER_SUCCEEDED: ['users'],
-  FETCH_SOMETHING_SUCCEEDED: ['something', 'somethingElse']
-}
-
-export default cache => {
-  return ({ getState }) => next => action => {
-    const keys = actionTypeMap[action.type]
-    const res = next(action)
-    const state = getState()
-    if (keys) {
-      ric(() => {
-        Promise.all(
-          keys.map(key => {
-            return cache.set(key, state[key])
-          })
-        ).then(() => {
-          console.info(
-            `persisted ${keys.join(', ')} because of action ${action.type}`
-          )
-        })
-      })
-    }
-    return res
-  }
-}
-```
-
-`entry.js`
+If you're using Redux, you could, for example combine this with [redux-persist-middleware](https://github.com/HenrikJoreteg/redux-persist-middleware) to lazily cache content of certain reducers when certain action types occur.
 
 ```js
 import { h, render } from 'preact'
 import { Provider } from 'preact-redux'
 import { getConfiguredCache } from 'money-clip'
-import ms from 'milliseconds'
 import { createStore, applyMiddleware } from 'redux'
+import ms from 'milliseconds'
 import rootReducer from './somewhere'
 import RootComponent from './components/root'
-import getPersistMiddleware from './get-persist-middleware'
+import getPersistMiddleware from 'redux-persist-middleware'
 import config from './my-config'
 
 // get a version of the cache lib with options pre-applied
-import cache =  getConfiguredCache({ version: config.cacheVersion, maxAge: ms.days(30) })
+import cache = getConfiguredCache({
+  version: config.cacheVersion,
+  maxAge: ms.days(30)
+})
 
 cache.getAll().then(data => {
   const store = createStore(
     rootReducer,
     data,
-    applyMiddleware(getPersistMiddleware(cache))
+    applyMiddleware(getPersistMiddleware(cache.set))
   )
 
   render(
@@ -146,8 +110,8 @@ cache.getAll().then(data => {
 
 ## Change log
 
-`2.0.0`: added `getConfiguredCache` renamed methods to more closely align with `idb-keyval`. Export `keys`, `del`, and `clear` directly. Tests, example, readme.
-`1.0.0`: initial release
+* `2.0.0`: added `getConfiguredCache` renamed methods to more closely align with `idb-keyval`. Export `keys`, `del`, and `clear` directly. Tests, example, readme.
+* `1.0.0`: initial release
 
 ## credits
 

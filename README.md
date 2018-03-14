@@ -110,6 +110,7 @@ cache.getAll().then(data => {
 
 ## Change log
 
+* `2.0.1`: Fixed bug where `clear` was not being exported after build.
 * `2.0.0`: added `getConfiguredCache` renamed methods to more closely align with `idb-keyval`. Export `keys`, `del`, and `clear` directly. Tests, example, readme.
 * `1.0.0`: initial release
 

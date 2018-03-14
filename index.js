@@ -1,6 +1,9 @@
 import idbKeyVal from 'idb-keyval'
-export const { keys, clear } = idbKeyVal
+
+// pass-through exports
 export const del = idbKeyVal.delete
+export const clear = idbKeyVal.clear
+export const keys = idbKeyVal.keys
 
 const defaultOpts = { maxAge: Infinity, version: 0, lib: idbKeyVal }
 const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)

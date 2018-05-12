@@ -1,7 +1,7 @@
 {
   "name": "money-clip",
   "description": "For managing your client side cache. Tiny wrapper over IndexedDB supporting versioning and max age.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "author": "Henrik Joreteg <henrik@joreteg.com> (joreteg.com)",
   "bugs": {
     "url": "https://github.com/HenrikJoreteg/money-clip/issues"

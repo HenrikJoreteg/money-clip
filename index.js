@@ -1,9 +1,7 @@
-import idbKeyVal from 'idb-keyval'
+import * as idbKeyVal from 'idb-keyval'
 
 // pass-through exports
-export const del = idbKeyVal.delete
-export const clear = idbKeyVal.clear
-export const keys = idbKeyVal.keys
+export const { del, clear, keys } = idbKeyVal
 
 const defaultOpts = { maxAge: Infinity, version: 0, lib: idbKeyVal }
 const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)
@@ -16,7 +14,7 @@ export const get = (key, opts) => {
     .then(parsed => {
       const age = Date.now() - parsed.time
       if (age > maxAge || version !== parsed.version) {
-        lib.delete(key)
+        lib.del(key)
         return null
       }
       return parsed.data
@@ -64,7 +62,7 @@ export const getConfiguredCache = spec => {
     get: key => get(key, opts),
     set: (key, val) => set(key, val, opts),
     getAll: () => getAll(opts),
-    del: opts.lib.delete,
+    del: opts.lib.del,
     clear: opts.lib.clear,
     keys: opts.lib.keys
   }

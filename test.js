@@ -17,7 +17,7 @@ const getLibStub = () => {
         resolve(null)
       }),
     get: key => Promise.resolve(cache[key]),
-    delete: key =>
+    del: key =>
       new Promise(resolve => {
         delete cache[key]
         resolve(null)

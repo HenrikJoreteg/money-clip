@@ -14,7 +14,7 @@ It exposes mostly the same cache API with a few extras:
 1.  `set`
 1.  `keys`
 1.  `clear`
-1.  `del` _called delete in original_
+1.  `del`
 
 These will all swallow errors because it's designed to work as an enhancement to a PWA. If something fails you simply don't start with a primed cache of data for your app. Nothing lost.
 
@@ -110,6 +110,7 @@ cache.getAll().then(data => {
 
 ## Change log
 
+* `2.0.2`: Updated to latest `idb-keyval`, no API change in this lib.
 * `2.0.1`: Fixed bug where `clear` was not being exported after build.
 * `2.0.0`: added `getConfiguredCache` renamed methods to more closely align with `idb-keyval`. Export `keys`, `del`, and `clear` directly. Tests, example, readme.
 * `1.0.0`: initial release

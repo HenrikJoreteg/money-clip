@@ -6,15 +6,15 @@ export const { del, clear, keys } = idbKeyVal
 const defaultOpts = { maxAge: Infinity, version: 0, lib: idbKeyVal }
 const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)
 
-export const get = (key, opts) => {
-  const { maxAge, version, lib, now } = getOpts(opts)
+export const get = (key, opts, store) => {
+  const { maxAge, version, lib } = getOpts(opts)
   return lib
-    .get(key)
+    .get(key, store)
     .then(JSON.parse)
     .then(parsed => {
       const age = Date.now() - parsed.time
       if (age > maxAge || version !== parsed.version) {
-        lib.del(key)
+        lib.del(key, store)
         return null
       }
       return parsed.data
@@ -22,7 +22,7 @@ export const get = (key, opts) => {
     .catch(() => null)
 }
 
-export const set = (key, data, spec) => {
+export const set = (key, data, spec, store) => {
   const { lib, version } = getOpts(spec)
   return lib
     .set(
@@ -31,19 +31,20 @@ export const set = (key, data, spec) => {
         version,
         time: Date.now(),
         data
-      })
+      }),
+      store
     )
     .catch(() => null)
 }
 
-export const getAll = spec => {
+export const getAll = (spec, store) => {
   const opts = getOpts(spec)
   let keys
   return opts.lib
-    .keys()
+    .keys(store)
     .then(retrievedKeys => {
       keys = retrievedKeys
-      return Promise.all(keys.map(key => get(key, opts)))
+      return Promise.all(keys.map(key => get(key, opts, store)))
     })
     .then(data =>
       data.reduce((acc, bundleData, index) => {
@@ -58,12 +59,16 @@ export const getAll = spec => {
 
 export const getConfiguredCache = spec => {
   const opts = getOpts(spec)
+  let store
+  if (opts.name) {
+    store = new idbKeyVal.Store(opts.name, opts.name)
+  }
   return {
-    get: key => get(key, opts),
-    set: (key, val) => set(key, val, opts),
-    getAll: () => getAll(opts),
-    del: opts.lib.del,
-    clear: opts.lib.clear,
-    keys: opts.lib.keys
+    get: key => get(key, opts, store),
+    set: (key, val) => set(key, val, opts, store),
+    getAll: () => getAll(opts, store),
+    del: () => opts.lib.del(store),
+    clear: () => opts.lib.clear(store),
+    keys: () => opts.lib.keys(store)
   }
 }

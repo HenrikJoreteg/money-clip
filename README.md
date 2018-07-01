@@ -71,6 +71,8 @@ Returns promise and clears everything in cache.
 
 Returns an object with all the methods listed above, but with pre-populated options. So if you prefer you can configure version and max age once, then just use `get`/`set` without passing options.
 
+This function also takes one additional option: `name` which lets you name the database / store. This can be useful if you need to create different caches for different categories of data.
+
 ## example
 
 If you're using Redux, you could, for example combine this with [redux-persist-middleware](https://github.com/HenrikJoreteg/redux-persist-middleware) to lazily cache content of certain reducers when certain action types occur.
@@ -89,7 +91,8 @@ import config from './my-config'
 // get a version of the cache lib with options pre-applied
 import cache = getConfiguredCache({
   version: config.cacheVersion,
-  maxAge: ms.days(30)
+  maxAge: ms.days(30),
+  name: 'user-data'
 })
 
 cache.getAll().then(data => {
@@ -110,9 +113,10 @@ cache.getAll().then(data => {
 
 ## Change log
 
+* `2.1.0`: Added support for passing `name` option to `.getConfiguredCache()` to name the IDB database.
 * `2.0.2`: Updated to latest `idb-keyval`, no API change in this lib.
 * `2.0.1`: Fixed bug where `clear` was not being exported after build.
-* `2.0.0`: added `getConfiguredCache` renamed methods to more closely align with `idb-keyval`. Export `keys`, `del`, and `clear` directly. Tests, example, readme.
+* `2.0.0`: added `.getConfiguredCache()` renamed methods to more closely align with `idb-keyval`. Export `keys`, `del`, and `clear` directly. Tests, example, readme.
 * `1.0.0`: initial release
 
 ## credits

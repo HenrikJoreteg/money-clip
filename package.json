@@ -7,11 +7,11 @@
     "url": "https://github.com/HenrikJoreteg/money-clip/issues"
   },
   "dependencies": {
-    "idb-keyval": "3.0.3"
+    "idb-keyval": "3.1.0"
   },
   "devDependencies": {
     "@std/esm": "0.25.2",
-    "microbundle": "0.4.4",
+    "microbundle": "0.6.0",
     "tape": "4.9.0"
   },
   "files": [
@@ -35,7 +35,7 @@
     "url": "https://github.com/HenrikJoreteg/money-clip.git"
   },
   "scripts": {
-    "build": "microbundle",
+    "build": "microbundle --external none --compress false --sourcemap false",
     "prepublish": "npm run build",
     "test": "tape test.js"
   },

@@ -63,7 +63,7 @@ Returns promise that resolve to object keys
 
 Returns promise but deletes content of key.
 
-### clear(key)
+### clear()
 
 Returns promise and clears everything in cache.
 
@@ -113,6 +113,7 @@ cache.getAll().then(data => {
 
 ## Change log
 
+- `3.0.2`: Fixed `configuredCache.del` to actually work
 - `3.0.1`: doc fix
 - `3.0.0`: idb-keyval was not being transpiled to es5 causing `class` to be used in the final bundle of some of my apps. Turns off compression and minification of build, that's a concern for final packaging.
 - `2.1.0`: Added support for passing `name` option to `.getConfiguredCache()` to name the IDB database.

@@ -95,18 +95,20 @@ test('getConfiguredCache', t => {
 
   cache
     .set('thing', 'value')
+    .then(() => cache.set('thing2', 'value2'))
     .then(() => cache.get('thing'))
     .then(val => {
       t.equal(val, 'value')
       // now try with passing in version manually
       // to show the options were actually used
       // when using pre-configured cache
-      return clip.get('thing', { lib, version: 5 })
+      return clip.get('thing2', { lib, version: 5 })
     })
     .then(val => {
-      t.equal(val, 'value')
-      return cache.getAll()
+      t.equal(val, 'value2')
+      return cache.del('thing2')
     })
+    .then(() => cache.getAll())
     .then(res => {
       t.deepEqual(res, { thing: 'value' }, 'first should return')
       return getWaitPromise(() => cache.getAll())

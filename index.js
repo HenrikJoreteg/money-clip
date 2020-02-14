@@ -67,7 +67,7 @@ export const getConfiguredCache = spec => {
     get: key => get(key, opts, store),
     set: (key, val) => set(key, val, opts, store),
     getAll: () => getAll(opts, store),
-    del: () => opts.lib.del(store),
+    del: key => opts.lib.del(key, store),
     clear: () => opts.lib.clear(store),
     keys: () => opts.lib.keys(store)
   }

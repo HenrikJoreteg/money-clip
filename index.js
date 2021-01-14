@@ -1,10 +1,9 @@
 import * as idbKeyVal from './idb-keyval'
 
-// pass-through exports
-export const { del, clear, keys } = idbKeyVal
-
 const defaultOpts = { maxAge: Infinity, version: 0, lib: idbKeyVal }
 const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)
+
+export const keyValLib = idbKeyVal
 
 export const get = (key, opts, store) => {
   const { maxAge, version, lib } = getOpts(opts)

@@ -33,6 +33,11 @@ const getLibStub = () => {
   }
 }
 
+test('exports', t => {
+  t.ok(clip.keyValLib, 'has Store export')
+  t.end()
+})
+
 test('basic get/set works', t => {
   const opts = { lib: getLibStub() }
   clip

@@ -1,4 +1,4 @@
-import * as idbKeyVal from './idb-keyval'
+import * as idbKeyVal from 'idb-keyval'
 
 const defaultOpts = { maxAge: Infinity, version: 0, lib: idbKeyVal }
 const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)

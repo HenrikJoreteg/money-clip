@@ -39,7 +39,7 @@ npm install money-clip
 ```js
 const options = {
   version: 1, // this can be any string or number
-  maxAge: Infinity // in number of milliseconds
+  maxAge: Infinity, // in number of milliseconds
 }
 ```
 
@@ -92,10 +92,10 @@ import config from './my-config'
 const cache = getConfiguredCache({
   version: config.cacheVersion,
   maxAge: ms.days(30),
-  name: 'user-data'
+  name: 'user-data',
 })
 
-cache.getAll().then(data => {
+cache.getAll().then((data) => {
   const store = createStore(
     rootReducer,
     data,
@@ -113,6 +113,7 @@ cache.getAll().then(data => {
 
 ## Change log
 
+- `3.0.4`: Updated dependencies to get Safari fix added to `idb-keyval` lib. Thanks [@rickharris](https://github.com/rickharris)!
 - `3.0.3`: Export keyval lib itself
 - `3.0.2`: Fixed `configuredCache.del` to actually work
 - `3.0.1`: doc fix

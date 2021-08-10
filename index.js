@@ -29,7 +29,7 @@ export const set = (key, data, spec, store) => {
       JSON.stringify({
         version,
         time: Date.now(),
-        data
+        data,
       }),
       store
     )
@@ -60,7 +60,7 @@ export const getConfiguredCache = spec => {
   const opts = getOpts(spec)
   let store
   if (opts.name) {
-    store = new idbKeyVal.Store(opts.name, opts.name)
+    store = idbKeyVal.createStore(opts.name, opts.name)
   }
   return {
     get: key => get(key, opts, store),
@@ -68,6 +68,6 @@ export const getConfiguredCache = spec => {
     getAll: () => getAll(opts, store),
     del: key => opts.lib.del(key, store),
     clear: () => opts.lib.clear(store),
-    keys: () => opts.lib.keys(store)
+    keys: () => opts.lib.keys(store),
   }
 }

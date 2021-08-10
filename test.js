@@ -29,7 +29,7 @@ const getLibStub = () => {
           delete cache[key]
         }
         resolve(null)
-      })
+      }),
   }
 }
 
@@ -95,7 +95,7 @@ test('getConfiguredCache', t => {
   const cache = clip.getConfiguredCache({
     lib,
     version: 5,
-    maxAge: 100
+    maxAge: 100,
   })
 
   cache

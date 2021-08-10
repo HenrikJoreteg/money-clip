@@ -95,7 +95,7 @@ const cache = getConfiguredCache({
   name: 'user-data',
 })
 
-cache.getAll().then((data) => {
+cache.getAll().then(data => {
   const store = createStore(
     rootReducer,
     data,
@@ -113,6 +113,7 @@ cache.getAll().then((data) => {
 
 ## Change log
 
+- `3.0.5`: Updated to fix issue w/ update that involved changed exports from `idb-keyval` during upgrade, sorry!
 - `3.0.4`: Updated dependencies to get Safari fix added to `idb-keyval` lib. Thanks [@rickharris](https://github.com/rickharris)!
 - `3.0.3`: Export keyval lib itself
 - `3.0.2`: Fixed `configuredCache.del` to actually work

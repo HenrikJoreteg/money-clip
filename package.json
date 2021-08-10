@@ -28,7 +28,8 @@
   "module": "dist/money-clip.m.js",
   "prettier": {
     "semi": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "arrowParens": "avoid"
   },
   "repository": {
     "type": "git",

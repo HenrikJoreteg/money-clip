@@ -1,22 +1,22 @@
 import * as idbKeyVal from 'idb-keyval'
 
-export type MoneyClipOptions = {
+type DefaultOpts = {
   maxAge: number
   version: number | string
   lib: typeof idbKeyVal
   name?: string
 }
 
-export type OptionalMoneyClipOptions = Partial<MoneyClipOptions>
+export type MoneyClipOptions = Partial<DefaultOpts>
 
 export type Key = IDBValidKey
 
-const defaultOpts: MoneyClipOptions = {
+const defaultOpts: DefaultOpts = {
   maxAge: Infinity,
   version: 0,
   lib: idbKeyVal,
 }
-const getOpts = (passedOptions: OptionalMoneyClipOptions) =>
+const getOpts = (passedOptions: MoneyClipOptions) =>
   Object.assign({}, defaultOpts, passedOptions)
 
 type Store = idbKeyVal.UseStore
@@ -31,7 +31,7 @@ export const keyValLib = idbKeyVal
 
 export const get = <T = any>(
   key: Key,
-  opts: OptionalMoneyClipOptions,
+  opts: MoneyClipOptions,
   store: Store
 ) => {
   const { maxAge, version, lib } = getOpts(opts)

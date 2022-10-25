@@ -1,5 +1,5 @@
 {
-  "name": "@fauzanrh/money-clip",
+  "name": "@thezano/money-clip",
   "description": "For managing your client side cache. Tiny wrapper over IndexedDB supporting versioning and max age.",
   "version": "3.1.0",
   "author": "Henrik Joreteg <henrik@joreteg.com> (joreteg.com)",
@@ -27,7 +27,7 @@
   "license": "MIT",
   "main": "dist/money-clip.js",
   "module": "dist/money-clip.m.js",
-  "types": "dist/foo.d.ts",
+  "types": "dist/index.d.ts",
   "prettier": {
     "semi": false,
     "singleQuote": true,
@@ -35,7 +35,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/HenrikJoreteg/money-clip.git"
+    "url": "git+https://github.com/HenrikJoreteg/money-clip.git"
   },
   "scripts": {
     "build": "microbundle --external none --compress false --sourcemap false",

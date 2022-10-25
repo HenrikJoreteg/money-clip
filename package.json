@@ -12,7 +12,8 @@
   "devDependencies": {
     "esm": "3.2.25",
     "microbundle": "0.13.3",
-    "tape": "5.3.1"
+    "tape": "5.3.1",
+    "typescript": "^4.8.4"
   },
   "files": [
     "dist"
@@ -26,6 +27,7 @@
   "license": "MIT",
   "main": "dist/money-clip.js",
   "module": "dist/money-clip.m.js",
+  "types": "dist/foo.d.ts",
   "prettier": {
     "semi": false,
     "singleQuote": true,
@@ -40,5 +42,5 @@
     "prepublish": "npm run build",
     "test": "tape test.js"
   },
-  "source": "index.js"
+  "source": "index.ts"
 }

@@ -7,6 +7,8 @@ export type MoneyClipOptions = {
   name?: string
 }
 
+export type OptionalMoneyClipOptions = Partial<MoneyClipOptions>
+
 export type Key = IDBValidKey
 
 const defaultOpts: MoneyClipOptions = {
@@ -14,7 +16,7 @@ const defaultOpts: MoneyClipOptions = {
   version: 0,
   lib: idbKeyVal,
 }
-const getOpts = (passedOptions: MoneyClipOptions) =>
+const getOpts = (passedOptions: OptionalMoneyClipOptions) =>
   Object.assign({}, defaultOpts, passedOptions)
 
 type Store = idbKeyVal.UseStore
@@ -29,7 +31,7 @@ export const keyValLib = idbKeyVal
 
 export const get = <T = any>(
   key: Key,
-  opts: MoneyClipOptions,
+  opts: OptionalMoneyClipOptions,
   store: Store
 ) => {
   const { maxAge, version, lib } = getOpts(opts)

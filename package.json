@@ -12,6 +12,7 @@
   "files": [
     "index.js"
   ],
+  "sideEffects": false,
   "type": "module",
   "homepage": "https://github.com/HenrikJoreteg/money-clip",
   "keywords": [
@@ -36,6 +37,7 @@
     "url": "https://github.com/HenrikJoreteg/money-clip.git"
   },
   "scripts": {
+    "check": "npm run format && npm run ensure-no-unstaged && npm test",
     "ensure-no-unstaged": "git diff && git diff --quiet",
     "format": "prettier --write .",
     "test": "node --test"

@@ -142,6 +142,55 @@ test('createStore retries once if the cached connection is closing', async () =>
   assert.equal(storeCalls, 2, 'retries the original operation once')
 })
 
+test('createStore retries once if the cached connection throws synchronously while closing', async () => {
+  let storesCreated = 0
+  let storeCalls = 0
+  const lib = {
+    createStore: () => {
+      storesCreated += 1
+      const storeNumber = storesCreated
+      return (txMode, callback) => {
+        storeCalls += 1
+        if (storeNumber === 1) {
+          throw getClosingConnectionError()
+        }
+        return Promise.resolve(callback({ txMode, storeNumber }))
+      }
+    },
+  }
+  const store = clip.createStore('test-db', 'test-store', lib)
+
+  const result = await store('readonly', objectStore => objectStore)
+
+  assert.equal(result.txMode, 'readonly')
+  assert.equal(result.storeNumber, 2, 'uses the reopened store')
+  assert.equal(storesCreated, 2, 'recreates the store once')
+  assert.equal(storeCalls, 2, 'retries the original operation once')
+})
+
+test('createStore does not retry non-recoverable errors', async () => {
+  const error = new Error('permission denied')
+  let storesCreated = 0
+  let storeCalls = 0
+  const lib = {
+    createStore: () => {
+      storesCreated += 1
+      return () => {
+        storeCalls += 1
+        return Promise.reject(error)
+      }
+    },
+  }
+  const store = clip.createStore('test-db', 'test-store', lib)
+
+  await assert.rejects(
+    store('readonly', objectStore => objectStore),
+    thrown => thrown === error,
+  )
+  assert.equal(storesCreated, 1, 'does not recreate the store')
+  assert.equal(storeCalls, 1, 'does not retry the operation')
+})
+
 test('getConfiguredCache uses resilient named stores', async () => {
   const cache = {}
   let storesCreated = 0

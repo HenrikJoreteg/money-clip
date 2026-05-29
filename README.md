@@ -15,6 +15,8 @@ It exposes mostly the same cache API with a few extras:
 1.  `keys`
 1.  `clear`
 1.  `del`
+1.  `createStore`
+1.  `keyValLib`
 
 These will all swallow errors because it's designed to work as an enhancement to a PWA. If something fails you simply don't start with a primed cache of data for your app. Nothing lost.
 
@@ -69,6 +71,16 @@ Returns promise but deletes content of key.
 ### clear()
 
 Returns promise and clears everything in cache.
+
+### createStore(dbName, storeName)
+
+Returns an `idb-keyval` custom store function. If the cached IndexedDB
+connection is closing, it reopens the database and retries the transaction once.
+
+### keyValLib
+
+Exports the underlying `idb-keyval` methods, with `createStore` patched to use
+the resilient store wrapper above.
 
 ### getConfiguredCache(options)
 

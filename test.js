@@ -1,4 +1,5 @@
-import test from 'tape'
+import test from 'node:test'
+import assert from 'node:assert/strict'
 import * as clip from './index.js'
 
 const getWaitPromise = fn =>
@@ -39,66 +40,41 @@ const getClosingConnectionError = () => {
   return error
 }
 
-test('exports', t => {
-  t.ok(clip.keyValLib, 'has Store export')
-  t.ok(clip.createStore, 'has createStore export')
-  t.equal(clip.keyValLib.createStore, clip.createStore, 'exports patched createStore on keyValLib')
-  t.end()
+test('exports', () => {
+  assert.ok(clip.keyValLib, 'has Store export')
+  assert.ok(clip.createStore, 'has createStore export')
+  assert.equal(clip.keyValLib.createStore, clip.createStore, 'exports patched createStore on keyValLib')
 })
 
-test('basic get/set works', t => {
+test('basic get/set works', async () => {
   const opts = { lib: getLibStub() }
-  clip
-    .set('thing', 'value', opts)
-    .then(() => clip.get('thing', opts))
-    .then(val => {
-      t.equal(val, 'value')
-      t.end()
-    })
+
+  await clip.set('thing', 'value', opts)
+  const val = await clip.get('thing', opts)
+
+  assert.equal(val, 'value')
 })
 
-test('basic max age works', t => {
+test('basic max age works', async () => {
   const opts = { lib: getLibStub(), maxAge: 100 }
 
-  clip
-    .set('thing', 'value', opts)
-    .then(() => clip.get('thing', opts))
-    .then(val => {
-      t.equal(val, 'value')
-      return clip.getAll(opts)
-    })
-    .then(result => {
-      t.deepEqual(result, { thing: 'value' })
-      return getWaitPromise(() => clip.get('thing', opts))
-    })
-    .then(val => {
-      t.equal(val, null, 'should now be null')
-      return clip.getAll(opts)
-    })
-    .then(result => {
-      t.deepEqual(result, {}, 'should now be empty object')
-      t.end()
-    })
+  await clip.set('thing', 'value', opts)
+  assert.equal(await clip.get('thing', opts), 'value')
+  assert.deepEqual(await clip.getAll(opts), { thing: 'value' })
+  assert.equal(await getWaitPromise(() => clip.get('thing', opts)), null, 'should now be null')
+  assert.deepEqual(await clip.getAll(opts), {}, 'should now be empty object')
 })
 
-test('version mismatch causes deletion', t => {
+test('version mismatch causes deletion', async () => {
   const lib = getLibStub()
 
-  clip
-    .set('thing', 'value', { lib, version: 1 })
-    .then(() => clip.get('thing', { lib, version: 2 }))
-    .then(res => {
-      t.equal(res, null, 'should have returned null')
-      // even using old version it should now be gone
-      return clip.getAll({ lib, version: 1 })
-    })
-    .then(res => {
-      t.deepEqual(res, {})
-      t.end()
-    })
+  await clip.set('thing', 'value', { lib, version: 1 })
+  assert.equal(await clip.get('thing', { lib, version: 2 }), null, 'should have returned null')
+  // even using old version it should now be gone
+  assert.deepEqual(await clip.getAll({ lib, version: 1 }), {})
 })
 
-test('getConfiguredCache', t => {
+test('getConfiguredCache', async () => {
   const lib = getLibStub()
   const cache = clip.getConfiguredCache({
     lib,
@@ -106,33 +82,19 @@ test('getConfiguredCache', t => {
     maxAge: 100,
   })
 
-  cache
-    .set('thing', 'value')
-    .then(() => cache.set('thing2', 'value2'))
-    .then(() => cache.get('thing'))
-    .then(val => {
-      t.equal(val, 'value')
-      // now try with passing in version manually
-      // to show the options were actually used
-      // when using pre-configured cache
-      return clip.get('thing2', { lib, version: 5 })
-    })
-    .then(val => {
-      t.equal(val, 'value2')
-      return cache.del('thing2')
-    })
-    .then(() => cache.getAll())
-    .then(res => {
-      t.deepEqual(res, { thing: 'value' }, 'first should return')
-      return getWaitPromise(() => cache.getAll())
-    })
-    .then(res => {
-      t.deepEqual(res, {}, 'now it should have expired')
-      t.end()
-    })
+  await cache.set('thing', 'value')
+  await cache.set('thing2', 'value2')
+  assert.equal(await cache.get('thing'), 'value')
+  // now try with passing in version manually
+  // to show the options were actually used
+  // when using pre-configured cache
+  assert.equal(await clip.get('thing2', { lib, version: 5 }), 'value2')
+  await cache.del('thing2')
+  assert.deepEqual(await cache.getAll(), { thing: 'value' }, 'first should return')
+  assert.deepEqual(await getWaitPromise(() => cache.getAll()), {}, 'now it should have expired')
 })
 
-test('createStore retries once if the cached connection is closing', t => {
+test('createStore retries once if the cached connection is closing', async () => {
   let storesCreated = 0
   let storeCalls = 0
   const lib = {
@@ -150,16 +112,15 @@ test('createStore retries once if the cached connection is closing', t => {
   }
   const store = clip.createStore('test-db', 'test-store', lib)
 
-  store('readonly', objectStore => objectStore).then(result => {
-    t.equal(result.txMode, 'readonly')
-    t.equal(result.storeNumber, 2, 'uses the reopened store')
-    t.equal(storesCreated, 2, 'recreates the store once')
-    t.equal(storeCalls, 2, 'retries the original operation once')
-    t.end()
-  })
+  const result = await store('readonly', objectStore => objectStore)
+
+  assert.equal(result.txMode, 'readonly')
+  assert.equal(result.storeNumber, 2, 'uses the reopened store')
+  assert.equal(storesCreated, 2, 'recreates the store once')
+  assert.equal(storeCalls, 2, 'retries the original operation once')
 })
 
-test('getConfiguredCache uses resilient named stores', t => {
+test('getConfiguredCache uses resilient named stores', async () => {
   const cache = {}
   let storesCreated = 0
   const lib = {
@@ -192,12 +153,8 @@ test('getConfiguredCache uses resilient named stores', t => {
   }
   const namedCache = clip.getConfiguredCache({ lib, name: 'named-cache' })
 
-  namedCache
-    .set('thing', 'value')
-    .then(() => namedCache.get('thing'))
-    .then(value => {
-      t.equal(value, 'value')
-      t.equal(storesCreated, 2, 'recovers by creating a fresh named store')
-      t.end()
-    })
+  await namedCache.set('thing', 'value')
+
+  assert.equal(await namedCache.get('thing'), 'value')
+  assert.equal(storesCreated, 2, 'recovers by creating a fresh named store')
 })

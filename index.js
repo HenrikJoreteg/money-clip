@@ -1,9 +1,46 @@
 import * as idbKeyVal from 'idb-keyval'
 
-const defaultOpts = { maxAge: Infinity, version: 0, lib: idbKeyVal }
-const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)
+const isRecoverableStoreError = error => {
+  if (!error) return false
+  const message = error.message || ''
+  return (
+    error.name === 'InvalidStateError' ||
+    /database connection is closing/i.test(message)
+  )
+}
 
-export const keyValLib = idbKeyVal
+export const createStore = (dbName, storeName, lib = idbKeyVal) => {
+  const createStoreFn = lib.createStore && lib.createStore !== createStore
+    ? lib.createStore.bind(lib)
+    : idbKeyVal.createStore
+  let store = createStoreFn(dbName, storeName)
+
+  const resetStore = () => {
+    store = createStoreFn(dbName, storeName)
+    return store
+  }
+
+  const runStore = (txMode, callback) => {
+    try {
+      return Promise.resolve(store(txMode, callback))
+    } catch (error) {
+      return Promise.reject(error)
+    }
+  }
+
+  return (txMode, callback) =>
+    runStore(txMode, callback).catch(error => {
+      if (!isRecoverableStoreError(error)) {
+        throw error
+      }
+      return resetStore()(txMode, callback)
+    })
+}
+
+export const keyValLib = Object.assign({}, idbKeyVal, { createStore })
+
+const defaultOpts = { maxAge: Infinity, version: 0, lib: keyValLib }
+const getOpts = passedOptions => Object.assign({}, defaultOpts, passedOptions)
 
 export const get = (key, opts, store) => {
   const { maxAge, version, lib } = getOpts(opts)
@@ -60,7 +97,7 @@ export const getConfiguredCache = spec => {
   const opts = getOpts(spec)
   let store
   if (opts.name) {
-    store = idbKeyVal.createStore(opts.name, opts.name)
+    store = createStore(opts.name, opts.name, opts.lib)
   }
   return {
     get: key => get(key, opts, store),

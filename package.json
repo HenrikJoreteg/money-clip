@@ -7,7 +7,7 @@
     "url": "https://github.com/HenrikJoreteg/money-clip/issues"
   },
   "dependencies": {
-    "idb-keyval": "5.1.3"
+    "idb-keyval": "6.2.4"
   },
   "devDependencies": {
     "esm": "3.2.25",

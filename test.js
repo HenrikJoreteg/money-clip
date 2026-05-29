@@ -1,5 +1,5 @@
-const test = require('tape')
-const clip = require('./dist/money-clip')
+import test from 'tape'
+import * as clip from './index.js'
 
 const getWaitPromise = fn =>
   new Promise(resolve =>

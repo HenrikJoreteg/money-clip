@@ -32,6 +32,9 @@ If you want to ensure you don't inflate cached data from another user, you can c
 npm install money-clip
 ```
 
+Version 4 is ESM-only and intended for modern frontend bundlers. Use `import`
+syntax rather than `require()`.
+
 ## API
 
 **note: All methods take the same optional options:**
@@ -113,6 +116,7 @@ cache.getAll().then(data => {
 
 ## Change log
 
+- `4.0.0`: ESM-only package, ships source directly, removes build tooling, updates dependencies, and adds resilient named-store handling for stale IndexedDB connections.
 - `3.0.5`: Updated to fix issue w/ update that involved changed exports from `idb-keyval` during upgrade, sorry!
 - `3.0.4`: Updated dependencies to get Safari fix added to `idb-keyval` lib. Thanks [@rickharris](https://github.com/rickharris)!
 - `3.0.3`: Export keyval lib itself

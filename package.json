@@ -1,7 +1,7 @@
 {
   "name": "money-clip",
   "description": "For managing your client side cache. Tiny wrapper over IndexedDB supporting versioning and max age.",
-  "version": "3.0.5",
+  "version": "4.0.0",
   "author": "Henrik Joreteg <henrik@joreteg.com> (joreteg.com)",
   "bugs": {
     "url": "https://github.com/HenrikJoreteg/money-clip/issues"
@@ -10,14 +10,12 @@
     "idb-keyval": "6.2.4"
   },
   "devDependencies": {
-    "@rollup/plugin-node-resolve": "16.0.3",
-    "esm": "3.2.25",
-    "rollup": "4.60.4",
     "tape": "5.9.0"
   },
   "files": [
-    "dist"
+    "index.js"
   ],
+  "type": "module",
   "homepage": "https://github.com/HenrikJoreteg/money-clip",
   "keywords": [
     "PWA",
@@ -25,8 +23,11 @@
     "indexeddb"
   ],
   "license": "MIT",
-  "main": "dist/money-clip.js",
-  "module": "dist/money-clip.m.js",
+  "main": "./index.js",
+  "module": "./index.js",
+  "exports": {
+    ".": "./index.js"
+  },
   "prettier": {
     "semi": false,
     "singleQuote": true,
@@ -37,10 +38,6 @@
     "url": "https://github.com/HenrikJoreteg/money-clip.git"
   },
   "scripts": {
-    "build": "rollup -c",
-    "prepublish": "npm run build",
-    "pretest": "npm run build",
     "test": "tape test.js"
-  },
-  "source": "index.js"
+  }
 }

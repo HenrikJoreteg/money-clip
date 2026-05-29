@@ -15,6 +15,8 @@ It exposes mostly the same cache API with a few extras:
 1.  `keys`
 1.  `clear`
 1.  `del`
+1.  `createStore`
+1.  `keyValLib`
 
 These will all swallow errors because it's designed to work as an enhancement to a PWA. If something fails you simply don't start with a primed cache of data for your app. Nothing lost.
 
@@ -31,6 +33,9 @@ If you want to ensure you don't inflate cached data from another user, you can c
 ```
 npm install money-clip
 ```
+
+Version 4 is ESM-only and intended for modern frontend bundlers. Use `import`
+syntax rather than `require()`.
 
 ## API
 
@@ -67,6 +72,16 @@ Returns promise but deletes content of key.
 
 Returns promise and clears everything in cache.
 
+### createStore(dbName, storeName)
+
+Returns an `idb-keyval` custom store function. If the cached IndexedDB
+connection is closing, it reopens the database and retries the transaction once.
+
+### keyValLib
+
+Exports the underlying `idb-keyval` methods, with `createStore` patched to use
+the resilient store wrapper above.
+
 ### getConfiguredCache(options)
 
 Returns an object with all the methods listed above, but with pre-populated options. So if you prefer you can configure version and max age once, then just use `get`/`set` without passing options.
@@ -99,20 +114,21 @@ cache.getAll().then(data => {
   const store = createStore(
     rootReducer,
     data,
-    applyMiddleware(getPersistMiddleware(cache.set))
+    applyMiddleware(getPersistMiddleware(cache.set)),
   )
 
   render(
     <Provider store={store}>
       <RootComponent />
     </Provider>,
-    document.getElementById('app')
+    document.getElementById('app'),
   )
 })
 ```
 
 ## Change log
 
+- `4.0.0`: ESM-only package, ships source directly, removes build tooling, updates dependencies, and adds resilient named-store handling for stale IndexedDB connections.
 - `3.0.5`: Updated to fix issue w/ update that involved changed exports from `idb-keyval` during upgrade, sorry!
 - `3.0.4`: Updated dependencies to get Safari fix added to `idb-keyval` lib. Thanks [@rickharris](https://github.com/rickharris)!
 - `3.0.3`: Export keyval lib itself

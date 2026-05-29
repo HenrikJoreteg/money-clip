@@ -10,9 +10,10 @@ const isRecoverableStoreError = error => {
 }
 
 export const createStore = (dbName, storeName, lib = idbKeyVal) => {
-  const createStoreFn = lib.createStore && lib.createStore !== createStore
-    ? lib.createStore.bind(lib)
-    : idbKeyVal.createStore
+  const createStoreFn =
+    lib.createStore && lib.createStore !== createStore
+      ? lib.createStore.bind(lib)
+      : idbKeyVal.createStore
   let store = createStoreFn(dbName, storeName)
 
   const resetStore = () => {
@@ -68,7 +69,7 @@ export const set = (key, data, spec, store) => {
         time: Date.now(),
         data,
       }),
-      store
+      store,
     )
     .catch(() => null)
 }
@@ -88,7 +89,7 @@ export const getAll = (spec, store) => {
           acc[keys[index]] = bundleData
         }
         return acc
-      }, {})
+      }, {}),
     )
     .catch(() => {})
 }

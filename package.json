@@ -28,6 +28,7 @@
   "prettier": {
     "semi": false,
     "singleQuote": true,
+    "jsxSingleQuote": true,
     "arrowParens": "avoid"
   },
   "repository": {
@@ -35,6 +36,11 @@
     "url": "https://github.com/HenrikJoreteg/money-clip.git"
   },
   "scripts": {
+    "ensure-no-unstaged": "git diff && git diff --quiet",
+    "format": "prettier --write .",
     "test": "node --test"
+  },
+  "devDependencies": {
+    "prettier": "3.8.3"
   }
 }

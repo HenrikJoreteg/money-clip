@@ -6,7 +6,7 @@ const getWaitPromise = fn =>
   new Promise(resolve =>
     setTimeout(() => {
       resolve(fn())
-    }, 200)
+    }, 200),
   )
 
 const getLibStub = () => {
@@ -35,7 +35,9 @@ const getLibStub = () => {
 }
 
 const getClosingConnectionError = () => {
-  const error = new Error('Failed to execute transaction: database connection is closing')
+  const error = new Error(
+    'Failed to execute transaction: database connection is closing',
+  )
   error.name = 'InvalidStateError'
   return error
 }
@@ -43,7 +45,11 @@ const getClosingConnectionError = () => {
 test('exports', () => {
   assert.ok(clip.keyValLib, 'has Store export')
   assert.ok(clip.createStore, 'has createStore export')
-  assert.equal(clip.keyValLib.createStore, clip.createStore, 'exports patched createStore on keyValLib')
+  assert.equal(
+    clip.keyValLib.createStore,
+    clip.createStore,
+    'exports patched createStore on keyValLib',
+  )
 })
 
 test('basic get/set works', async () => {
@@ -61,7 +67,11 @@ test('basic max age works', async () => {
   await clip.set('thing', 'value', opts)
   assert.equal(await clip.get('thing', opts), 'value')
   assert.deepEqual(await clip.getAll(opts), { thing: 'value' })
-  assert.equal(await getWaitPromise(() => clip.get('thing', opts)), null, 'should now be null')
+  assert.equal(
+    await getWaitPromise(() => clip.get('thing', opts)),
+    null,
+    'should now be null',
+  )
   assert.deepEqual(await clip.getAll(opts), {}, 'should now be empty object')
 })
 
@@ -69,7 +79,11 @@ test('version mismatch causes deletion', async () => {
   const lib = getLibStub()
 
   await clip.set('thing', 'value', { lib, version: 1 })
-  assert.equal(await clip.get('thing', { lib, version: 2 }), null, 'should have returned null')
+  assert.equal(
+    await clip.get('thing', { lib, version: 2 }),
+    null,
+    'should have returned null',
+  )
   // even using old version it should now be gone
   assert.deepEqual(await clip.getAll({ lib, version: 1 }), {})
 })
@@ -90,8 +104,16 @@ test('getConfiguredCache', async () => {
   // when using pre-configured cache
   assert.equal(await clip.get('thing2', { lib, version: 5 }), 'value2')
   await cache.del('thing2')
-  assert.deepEqual(await cache.getAll(), { thing: 'value' }, 'first should return')
-  assert.deepEqual(await getWaitPromise(() => cache.getAll()), {}, 'now it should have expired')
+  assert.deepEqual(
+    await cache.getAll(),
+    { thing: 'value' },
+    'first should return',
+  )
+  assert.deepEqual(
+    await getWaitPromise(() => cache.getAll()),
+    {},
+    'now it should have expired',
+  )
 })
 
 test('createStore retries once if the cached connection is closing', async () => {

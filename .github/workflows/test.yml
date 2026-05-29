@@ -20,4 +20,6 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - run: npm run format
+      - run: npm run ensure-no-unstaged
       - run: npm test

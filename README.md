@@ -102,14 +102,14 @@ cache.getAll().then(data => {
   const store = createStore(
     rootReducer,
     data,
-    applyMiddleware(getPersistMiddleware(cache.set))
+    applyMiddleware(getPersistMiddleware(cache.set)),
   )
 
   render(
     <Provider store={store}>
       <RootComponent />
     </Provider>,
-    document.getElementById('app')
+    document.getElementById('app'),
   )
 })
 ```
